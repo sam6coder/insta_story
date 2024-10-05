@@ -9,6 +9,6 @@ This is the Insta Story app as given in task which display stories of users in l
 
 Here are some screenshots: 
 
-![WhatsApp Image 2024-10-05 at 12 59 24_d350e4c6](https://github.com/user-attachments/assets/8c8044b0-8829-42bb-b2e5-d6c46b88ea12)
-![WhatsApp Image 2024-10-05 at 13 04 16_39109d27](https://github.com/user-attachments/assets/4d99f0b0-9fde-48b3-bbc4-7eef232625a9)
-![WhatsApp Image 2024-10-05 at 13 04 16_ef579acd](https://github.com/user-attachments/assets/d5d7ecfd-b480-4d23-a6f9-633952c031f7)
+![WhatsApp Image 2024-10-05 at 12 59 24_d350e4c6](https://github.com/user-attachments/assets/8c8044b0-8829-42bb-b2e5-d6c46b88ea12,width="250")
+![WhatsApp Image 2024-10-05 at 13 04 16_39109d27](https://github.com/user-attachments/assets/4d99f0b0-9fde-48b3-bbc4-7eef232625a9,width="250")
+![WhatsApp Image 2024-10-05 at 13 04 16_ef579acd](https://github.com/user-attachments/assets/d5d7ecfd-b480-4d23-a6f9-633952c031f7,width="250")
