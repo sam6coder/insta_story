@@ -37,7 +37,7 @@ class HomeScreenState extends State<HomeScreen> {
                 return CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Center(
-                  child: Text('Error : ${snapshot.error}'),
+                  child: Text('Error : ${snapshot.error}',style: TextStyle(color: Colors.white),),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(

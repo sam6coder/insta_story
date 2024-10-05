@@ -169,7 +169,7 @@ class StoryScreenState extends State<StoryScreen>
                                 child: Text(
                                   widget.userName,
                                   style: TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       fontSize: 19,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -254,13 +254,13 @@ class StoryScreenState extends State<StoryScreen>
                                 left: MediaQuery.of(context).size.width * 0.21,
                                 child: Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.4,
+                                      MediaQuery.of(context).size.width * 0.5,
                                   height:
                                       MediaQuery.of(context).size.height * 0.1,
                                   child: Text(
                                     widget.userName,
                                     style: TextStyle(
-                                        color: Colors.white30,
+                                        color: Colors.black,
                                         fontSize: 19,
                                         fontWeight: FontWeight.bold),
                                   ),
