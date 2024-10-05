@@ -17,7 +17,7 @@ class AppBarWidgetScreen extends StatelessWidget implements PreferredSizeWidget{
   Widget build(BuildContext context){
     return Padding(
       padding: const EdgeInsets.only(top:8.0,left:8,right:8),
-      child: AppBar(g
+      child: AppBar(
         backgroundColor: backgroundColor,
         title: Align(alignment:Alignment.topLeft,child: Text(title,style: TextStyle(color: Colors.white,fontFamily: 'MonteCarlo',fontWeight: FontWeight.bold,fontSize: 35),)),
 

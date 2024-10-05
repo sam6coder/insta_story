@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:story/models/user.dart';
 import 'package:story/models/story.dart';
+import 'package:story/utils/common_utils.dart';
 import 'package:video_player/video_player.dart';
 import 'home_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:material_color_utilities/utils/color_utils.dart';
 
 class StoryScreen extends StatefulWidget {
   final List<StoryModel> stories;
@@ -25,23 +27,20 @@ class StoryScreenState extends State<StoryScreen>
   VideoPlayerController? _videoPlayerController;
   bool isVideoInitialised = false;
 
-
   void initialiseVideoController() {
     StoryModel? video =
         widget.stories.firstWhere((story) => story.media_type == 'video');
 
+    Uri videoUrl = Uri.parse(video.media_url);
 
-      Uri videoUrl = Uri.parse(video.media_url);
-
-      _videoPlayerController = VideoPlayerController.networkUrl(videoUrl)
-        ..initialize().then((_) {
-            setState(() {
-              isVideoInitialised = true;
-              _videoPlayerController!.play();
-              _videoPlayerController!.setVolume(100);
-            });
+    _videoPlayerController = VideoPlayerController.networkUrl(videoUrl)
+      ..initialize().then((_) {
+        setState(() {
+          isVideoInitialised = true;
+          _videoPlayerController!.play();
+          _videoPlayerController!.setVolume(100);
         });
-
+      });
   }
 
   void _toggleMute() {
@@ -85,7 +84,7 @@ class StoryScreenState extends State<StoryScreen>
 
   @override
   void dispose() {
-      _videoPlayerController!.dispose();
+    _videoPlayerController!.dispose();
 
     _pageController!.dispose();
     _animationController!.dispose();
@@ -107,90 +106,141 @@ class StoryScreenState extends State<StoryScreen>
         },
         child: Scaffold(
           body: GestureDetector(
-            onLongPressStart: (_){
-    if (_videoPlayerController!.value.isPlaying) {
-    _videoPlayerController!.pause();
-    _animationController!.stop();
-
-    };},
-            onLongPressEnd: (_){
-    if (_videoPlayerController!.value.isPlaying) {
-
-    _videoPlayerController!.play();
-              _animationController!.forward();
-            };},
+            onLongPressStart: (_) {
+              if (_videoPlayerController!=null && _videoPlayerController!.value.isPlaying) {
+                _videoPlayerController!.pause();
+                _animationController!.stop();
+              }
+              ;
+            },
+            onLongPressEnd: (_) {
+              if (_videoPlayerController!=null && !_videoPlayerController!.value.isPlaying) {
+                _videoPlayerController!.play();
+                _animationController!.forward();
+              }
+              ;
+            },
             onTapDown: (details) => _onTapDown(details, currentStory),
             child: Stack(
-              children:[ PageView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _pageController,
-                  itemCount: widget.stories.length,
-                  itemBuilder: (context, i) {
-                    final StoryModel story = widget.stories[i];
-                    print(story.media_url);
+              children: [
+                PageView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: _pageController,
+                    itemCount: widget.stories.length,
+                    itemBuilder: (context, i) {
+                      final StoryModel story = widget.stories[i];
+                      print(story.media_url);
 
-
-                    switch (story.media_type) {
-                      case "image":
-                        return Stack(children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            child: CachedNetworkImage(
-                              imageUrl: story.media_url,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            top: 20,
-                            left: 20,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.12,
-                              height: MediaQuery.of(context).size.height * 0.12,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  image: DecorationImage(
-                                      image: NetworkImage(widget.picture))),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Positioned(
-                            top: 60,
-                            left: MediaQuery.of(context).size.width * 0.21,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              child: Text(
-                                widget.userName,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold),
+                      switch (story.media_type) {
+                        case "image":
+                          return Stack(children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: CachedNetworkImage(
+                                imageUrl: story.media_url,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                        ]);
-                      case "video":
+                            Positioned(
+                              top: 20,
+                              left: 20,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.12,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.12,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                    image: DecorationImage(
+                                        image: NetworkImage(widget.picture))),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Positioned(
+                              top: 60,
+                              left: MediaQuery.of(context).size.width * 0.21,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                child: Text(
+                                  widget.userName,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 20,
+                              left:20,
 
+                              child: Center(
+                                child: Container(
+                                    color:Colors.white70,
+                                    child: Text(story.text_description,style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),)),
+                              ),
+                            ),
+                            Positioned(
+                              top: 90,
+                              right:30,
 
+                              child: Center(
+                                child: Text(story.text,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                              ),
+                            ),
+                          ]);
+                        case "video":
                           return Stack(
                             children: [
-                              (_videoPlayerController!=null && _videoPlayerController!.value.isInitialized)?SizedBox(
-                                  height: MediaQuery.of(context).size.height,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: VideoPlayer(_videoPlayerController!)):Center(child: CircularProgressIndicator(color: Colors.black,),),
+                              (_videoPlayerController != null &&
+                                      _videoPlayerController!
+                                          .value.isInitialized)
+                                  ? Stack(
+                                    children:[ SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        width: MediaQuery.of(context).size.width,
+                                        child:
+                                            VideoPlayer(_videoPlayerController!)),
+                                      Positioned(
+                                        top: 90,
+                                        right:30,
+
+                                        child: Center(
+                                          child: Text(story.text,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 30,
+                                        left:30,
+
+                                        child: Center(
+                                          child: Container(
+                                              color:Colors.white70,
+                                              child: Text(story.text_description,style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),)),
+                                        ),
+                                      ),
+                                  ],)
+                                  : Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                      ),
+                                    ),
                               Positioned(
                                 top: 20,
                                 left: 20,
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.12,
-                            height:
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.12,
+                                  height:
                                       MediaQuery.of(context).size.height * 0.12,
                                   decoration: BoxDecoration(
-                                shape: BoxShape.circle,
+                                      shape: BoxShape.circle,
                                       color: Colors.white,
                                       image: DecorationImage(
                                           image: NetworkImage(widget.picture))),
@@ -203,7 +253,8 @@ class StoryScreenState extends State<StoryScreen>
                                 top: 60,
                                 left: MediaQuery.of(context).size.width * 0.21,
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
                                   height:
                                       MediaQuery.of(context).size.height * 0.1,
                                   child: Text(
@@ -235,26 +286,33 @@ class StoryScreenState extends State<StoryScreen>
                                       )),
                                 ),
                               ),
+
                             ],
                           );
-                        }
-                        return const SizedBox.shrink();
-                    }
-                  ),
+                      }
+                      return const SizedBox.shrink();
+                    }),
                 Positioned(
-                  top:40,
+                  top: 40,
                   left: 10,
                   right: 10,
                   child: Row(
-                    children: widget.stories.asMap().map((i,e){
-                      return MapEntry(i, AnimatedBar(animeController: _animationController!,
-
-                        position: i,currentIndex: _currentIndex,
-                      ));
-                    }).values.toList()
-                  ),
+                      children: widget.stories
+                          .asMap()
+                          .map((i, e) {
+                            return MapEntry(
+                                i,
+                                AnimatedBar(
+                                  animeController: _animationController!,
+                                  position: i,
+                                  currentIndex: _currentIndex,
+                                ));
+                          })
+                          .values
+                          .toList()),
                 )
-            ],),
+              ],
+            ),
           ),
         ));
   }
@@ -267,12 +325,11 @@ class StoryScreenState extends State<StoryScreen>
       // tapped left of screen
       setState(() {
         if (_currentIndex - 1 >= 0) {
-         _currentIndex -= 1;
+          _currentIndex -= 1;
           loadStory(story: widget.stories[_currentIndex]);
         }
       });
     } else if (dx > 2 * screenWidth / 3) {
-
       setState(() {
         if (_currentIndex + 1 < widget.stories.length) {
           // tapped right of screen
@@ -285,16 +342,17 @@ class StoryScreenState extends State<StoryScreen>
         }
       });
     } else {
+      _toggleMute();
       //tapped in middle of screen
-      if(story.media_type=="video")
-      if (_videoPlayerController!.value.isPlaying) {
-        _videoPlayerController!.pause();
-        _animationController!.stop();
-
-      } else {
-        _videoPlayerController!.play();
-        _animationController!.forward();
-      }
+      // if(story.media_type=="video")
+      // if (_videoPlayerController!.value.isPlaying) {
+      //   _videoPlayerController!.pause();
+      //   _animationController!.stop();
+      //
+      // } else {
+      //   _videoPlayerController!.play();
+      //   _animationController!.forward();
+      // }
     }
   }
 
@@ -304,6 +362,10 @@ class StoryScreenState extends State<StoryScreen>
 
     switch (story!.media_type) {
       case "image":
+        if(_videoPlayerController!=null){
+          _videoPlayerController!.dispose();
+          _videoPlayerController = null;}
+
         _animationController!.duration = Duration(
             days: 0,
             hours: 0,
@@ -315,8 +377,9 @@ class StoryScreenState extends State<StoryScreen>
         break;
 
       case "video":
+        if(_videoPlayerController!=null){
         _videoPlayerController!.dispose();
-        _videoPlayerController = null;
+        _videoPlayerController = null;}
         Uri videoUrl = Uri.parse(story.media_url);
         _videoPlayerController = VideoPlayerController.networkUrl(videoUrl)
           ..initialize().then((_) {
@@ -328,23 +391,44 @@ class StoryScreenState extends State<StoryScreen>
                 _animationController!.forward();
               }
             });
-          }).catchError((error){
+          // }).catchError((error) {
+          //   setState(() {
+          //     isVideoInitialised = false;
+          //     showDialog(
+          //         context: context,
+          //         builder: (BuildContext context) {
+          //           return AlertDialog(
+          //             title: Text("Error"),
+          //             content: Text("Video failed to load"),
+          //             actions: [
+          //               TextButton(
+          //                   onPressed: () {
+          //                     Navigator.of(context).pop();
+          //                     loadStory(story:widget.stories[_currentIndex+1],animatPage: false);
+          //                   },
+          //                   child: Text("Ok"))
+          //             ],
+          //           );
+          //         });
+            });
+        _videoPlayerController!.addListener(() {
+          if (_videoPlayerController!.value.hasError) {
+            isVideoInitialised = false;
+            showAlertToast(msg: "Video can't load");
+
             setState(() {
-              isVideoInitialised=false;
-              showDialog(context: context, builder: (BuildContext context){
-                return AlertDialog(title:Text("Error"),
-                content:Text("Video failed to load"),
-                  actions: [
-                    TextButton(onPressed: (){
-                      Navigator.of(context).pop();
-                    }, child: Text("Ok"))
-                  ],
-                );
+              if (_currentIndex + 1 < widget.stories.length) {
+                _currentIndex += 1;
+                loadStory(story: widget.stories[_currentIndex]);
+              } else {
+                _currentIndex = 0;
+                loadStory(story: widget.stories[_currentIndex]);
+              }
             });
           }
-            );});
+        });
         break;
-    }
+        }
     if (animatPage) {
       //if animatePage is true,move to previous or next page
       _pageController!.animateToPage(_currentIndex,
@@ -353,58 +437,59 @@ class StoryScreenState extends State<StoryScreen>
   }
 }
 
-class AnimatedBar extends StatelessWidget{
+class AnimatedBar extends StatelessWidget {
   final AnimationController animeController;
   final int currentIndex;
   final int position;
 
-  AnimatedBar({
-    Key? key,
-    required this.animeController,
-    required this.currentIndex,
-    required this.position
-
-}):super(key:key);
+  AnimatedBar(
+      {Key? key,
+      required this.animeController,
+      required this.currentIndex,
+      required this.position})
+      : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Flexible(
-    child:Padding(
+        child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 1.5),
-        child: LayoutBuilder(builder: (context, constraints){
-          return Stack(
-            children: [
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Stack(
+          children: [
             buildContainer(
               double.infinity,
-              position<currentIndex?Colors.white:Colors.white.withOpacity(0.5),
-            )  ,
-              position==currentIndex?
-                  AnimatedBuilder(animation: animeController,
-                      builder: (context,child){
-                    return buildContainer(
-                      constraints.maxWidth*animeController.value,
-                      Colors.white,
-                    );
-                      }):SizedBox.shrink()
-            ],
-          );
-        }),
-    )
-    );
+              position < currentIndex
+                  ? Colors.white
+                  : Colors.white.withOpacity(0.5),
+            ),
+            position == currentIndex
+                ? AnimatedBuilder(
+                    animation: animeController,
+                    builder: (context, child) {
+                      return buildContainer(
+                        constraints.maxWidth * animeController.value,
+                        Colors.white,
+                      );
+                    })
+                : SizedBox.shrink()
+          ],
+        );
+      }),
+    ));
   }
-  
-  Container buildContainer(double width, Color color){
+
+  Container buildContainer(double width, Color color) {
     return Container(
       height: 5,
       width: width,
       decoration: BoxDecoration(
-        color: color,
-        border: Border.all(
-          color: Colors.black26,
-          width: 0.8,
-        ),
-        borderRadius: BorderRadius.circular(3)
-      ),
+          color: color,
+          border: Border.all(
+            color: Colors.black26,
+            width: 0.8,
+          ),
+          borderRadius: BorderRadius.circular(3)),
     );
   }
 }
